@@ -47,6 +47,7 @@
 #include "dart/dynamics/WeldJoint.hpp"
 #include "dart/dynamics/FreeJoint.hpp"
 #include "dart/dynamics/PlanarJoint.hpp"
+#include "dart/dynamics/BallJoint.hpp"
 #include "dart/dynamics/Shape.hpp"
 #include "dart/dynamics/SphereShape.hpp"
 #include "dart/dynamics/BoxShape.hpp"
@@ -450,6 +451,15 @@ dynamics::BodyNode* DartLoader::createDartJointAndNode(
 
       break;
     }
+    case urdf::Joint::SPHERICAL:
+    {
+      dynamics::GenericJoint<math::SO3Space>::Properties properties(
+            basicProperties);
+
+      pair = _skeleton->createJointAndBodyNodePair<dynamics::BallJoint>(
+            _parent, properties, _body);
+      break;
+    }
     case urdf::Joint::PRISMATIC:
     {
       dynamics::PrismaticJoint::Properties properties(
@@ -565,21 +575,30 @@ bool DartLoader::createShapeNodes(
   const common::ResourceRetrieverPtr& resourceRetriever)
 {
   // Set visual information
-  for(auto visual : lk->visual_array)
+    
+  bool useCollisionForVisual = false;
+  if (lk->visual_array.size() > 0)
   {
-    dynamics::ShapePtr shape
-        = createShape(visual.get(), baseUri, resourceRetriever);
+      for(auto visual : lk->visual_array)
+      {
+        dynamics::ShapePtr shape
+            = createShape(visual.get(), baseUri, resourceRetriever);
 
-    if(shape)
-    {
-      auto shapeNode = bodyNode->createShapeNodeWith<dynamics::VisualAspect>(shape);
-      shapeNode->setRelativeTransform(toEigen(visual->origin));
-      setMaterial(model, shapeNode->getVisualAspect(), visual.get());
-    }
-    else
-    {
-      return false;
-    }
+        if(shape)
+        {
+          auto shapeNode = bodyNode->createShapeNodeWith<dynamics::VisualAspect>(shape);
+          shapeNode->setRelativeTransform(toEigen(visual->origin));
+          setMaterial(model, shapeNode->getVisualAspect(), visual.get());
+        }
+        else
+        {
+          return false;
+        }
+      }
+  }
+  else
+  {
+      useCollisionForVisual = true;
   }
 
   // Set collision information
@@ -590,9 +609,18 @@ bool DartLoader::createShapeNodes(
 
     if (shape)
     {
-      auto shapeNode = bodyNode->createShapeNodeWith<
-          dynamics::CollisionAspect, dynamics::DynamicsAspect>(shape);
-      shapeNode->setRelativeTransform(toEigen(collision->origin));
+      if (useCollisionForVisual)
+      {
+          auto shapeNode = bodyNode->createShapeNodeWith<
+              dynamics::CollisionAspect, dynamics::DynamicsAspect, dynamics::VisualAspect>(shape);
+          shapeNode->setRelativeTransform(toEigen(collision->origin));
+      }
+      else
+      {
+          auto shapeNode = bodyNode->createShapeNodeWith<
+              dynamics::CollisionAspect, dynamics::DynamicsAspect>(shape);
+          shapeNode->setRelativeTransform(toEigen(collision->origin));
+      }
     }
     else
       return false;
