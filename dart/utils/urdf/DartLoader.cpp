@@ -48,6 +48,7 @@
 #include "dart/dynamics/FreeJoint.hpp"
 #include "dart/dynamics/PlanarJoint.hpp"
 #include "dart/dynamics/BallJoint.hpp"
+#include "dart/dynamics/TranslationalJoint.hpp"
 #include "dart/dynamics/Shape.hpp"
 #include "dart/dynamics/SphereShape.hpp"
 #include "dart/dynamics/BoxShape.hpp"
@@ -483,6 +484,15 @@ dynamics::BodyNode* DartLoader::createDartJointAndNode(
             basicProperties);
 
       pair = _skeleton->createJointAndBodyNodePair<dynamics::FreeJoint>(
+            _parent, properties, _body);
+      break;
+    }
+    case urdf::Joint::TRANSLATIONAL:
+    {
+      dynamics::GenericJoint<math::R3Space>::Properties properties(
+            basicProperties);
+
+      pair = _skeleton->createJointAndBodyNodePair<dynamics::TranslationalJoint>(
             _parent, properties, _body);
       break;
     }
