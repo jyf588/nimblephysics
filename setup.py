@@ -41,11 +41,11 @@ class CMakeBuild(build_ext):
 
     cmake_args = ['-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=' + extdir,
                   '-DPYTHON_EXECUTABLE:FILEPATH=' + sys.executable]
-    # Set our Python version, default to 3.8
+    # Set our Python version, default to 3.7
     cmake_args += ['-DDARTPY_PYTHON_VERSION:STRING=' +
-                   os.getenv('PYTHON_VERSION_NUMBER', '3.8')]
+                   os.getenv('PYTHON_VERSION_NUMBER', '3.7')]
     cmake_args += ['-DPYBIND11_PYTHON_VERSION:STRING=' +
-                   os.getenv('PYTHON_VERSION_NUMBER', '3.8')]
+                   os.getenv('PYTHON_VERSION_NUMBER', '3.7')]
 
     # TODO: We include debug info in our released binaries, because it makes
     # it easier to profile and debug in the wild, which is more valuable than
@@ -68,10 +68,10 @@ class CMakeBuild(build_ext):
       cmake_args += ['-DCMAKE_BUILD_TYPE=' + cfg]
       # We need this on the manylinux2010 Docker images to find the correct Python
       if platform.system() == 'Linux':
-        # Use ENV vars, and default to 3.8 if we don't specify
+        # Use ENV vars, and default to 3.7 if we don't specify
         PYTHON_INCLUDE_DIR = os.getenv(
-            'PYTHON_INCLUDE', '/opt/python/cp38-cp38/include/python3.8/')
-        PYTHON_LIBRARY = os.getenv('PYTHON_LIB', '/opt/python/cp38-cp38/lib/python3.8/')
+            'PYTHON_INCLUDE', '/opt/python/cp37-cp37m/include/python3.7')
+        PYTHON_LIBRARY = os.getenv('PYTHON_LIB', '/opt/python/cp37-cp37m/lib/python3.7')
         print('Using PYTHON_INCLUDE_DIR='+PYTHON_INCLUDE_DIR)
         print('Using PYTHON_LIBRARY='+PYTHON_LIBRARY)
         cmake_args += ['-DPYTHON_INCLUDE_DIR:PATH='+PYTHON_INCLUDE_DIR]
