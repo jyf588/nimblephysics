@@ -937,6 +937,15 @@ void Skeleton(py::module& m)
           ::py::arg("node"),
           ::py::arg("inCoordinatesOf"))
       .def(
+           "getJacobianOfMWrtQ",
+           +[](dart::dynamics::Skeleton* self,
+               const Eigen::VectorXs& x)
+               -> Eigen::MatrixXs {
+             return self->getJacobianOfMWrtQ(x);
+           },
+           ::py::arg("x")
+           )
+      .def(
           "getJacobianSpatialDeriv",
           +[](const dart::dynamics::Skeleton* self,
               const dart::dynamics::JacobianNode* _node)

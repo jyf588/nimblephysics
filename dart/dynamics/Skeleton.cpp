@@ -1671,6 +1671,12 @@ Eigen::MatrixXs Skeleton::getJacobianOfM(
 }
 
 //==============================================================================
+Eigen::MatrixXs Skeleton::getJacobianOfMWrtQ(const Eigen::VectorXs& x)
+{
+    return getJacobianOfM(x, neural::WithRespectTo::POSITION);
+}
+
+//==============================================================================
 Eigen::MatrixXs Skeleton::getJacobianOfID(
     const Eigen::VectorXs& x, neural::WithRespectTo* wrt)
 {

@@ -611,6 +611,10 @@ public:
   Eigen::MatrixXs getJacobianOfM(
       const Eigen::VectorXs& x, neural::WithRespectTo* wrt);
 
+  /// This gives the unconstrained Jacobian of M*x wrt q using the derivative of the
+  /// inverse dynamics
+  Eigen::MatrixXs getJacobianOfMWrtQ(const Eigen::VectorXs& x);
+
   /// This gives the unconstrained Jacobian of M*x using the derivative of the
   /// inverse dynamics
   /// @warning SLOW: Only for testing
