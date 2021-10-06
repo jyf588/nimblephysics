@@ -1,6 +1,6 @@
 FROM quay.io/pypa/manylinux2014_x86_64
 MAINTAINER keenonwerling@gmail.com
-# TAG keenon/diffdart:base
+# TAG keenon/nimble_ci:base
 
 ENV PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:/usr/local/lib64/pkgconfig/"
 
@@ -116,7 +116,7 @@ RUN git clone https://github.com/leethomason/tinyxml2.git && \
     pushd tinyxml2 && \
     mkdir build && \
     pushd build && \
-    cmake .. && \
+    cmake -Dtinyxml2_SHARED_LIBS=YES .. && \
     make install -j10 && \
     popd && \
     popd && \
@@ -162,7 +162,7 @@ RUN git clone https://github.com/robotology-dependencies/tinyxml.git && \
     rm -rf tinyxml
 
 # Install urdfdom_headers
-RUN git clone https://github.com/ros/urdfdom_headers.git && \
+RUN git clone https://github.com/jyf588/urdfdom_headers.git && \
     pushd urdfdom_headers && \
     mkdir build && \
     pushd build && \
@@ -184,7 +184,7 @@ RUN git clone https://github.com/ros/console_bridge.git && \
     rm -rf console_bridge
 
 # Install urdfdom
-RUN git clone https://github.com/ros/urdfdom.git && \
+RUN git clone https://github.com/jyf588/urdfdom.git && \
     pushd urdfdom && \
     mkdir build && \
     pushd build && \
